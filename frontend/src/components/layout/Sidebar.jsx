@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { User, FileText, LayoutDashboard } from 'lucide-react';
+import { User, FileText, LayoutDashboard, Sprout, CloudRain, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Sidebar = () => {
@@ -14,10 +14,9 @@ const Sidebar = () => {
   ];
 
   const pages = [
-    { label: 'User Profile', path: '/profile', icon: User, nested: [
-      { label: 'Overview', path: '/profile' },
-      { label: 'Crops', path: '/crops' },
-    ]},
+    { label: 'Crops', path: '/crops', icon: Sprout },
+    { label: 'Weather', path: '/weather', icon: CloudRain },
+    { label: 'Smart Advice', path: '/advice', icon: Sparkles },
     { label: 'Blog', path: '/blog', icon: FileText },
   ];
 
@@ -38,31 +37,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3">
         {/* Favorites Section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between px-3 mb-2">
-            <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Favorites</span>
-            <span className="text-xs text-gray-400">Recently</span>
-          </div>
-          <ul className="space-y-0.5">
-            {favorites.map((item) => (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-colors",
-                    isActive(item.path)
-                      ? 'bg-gray-100 text-gray-900 font-medium'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  )}
-                >
-                  <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
+       
         {/* Dashboards Section */}
         <div className="mb-6">
           <div className="px-3 mb-2">
@@ -103,25 +78,16 @@ const Sidebar = () => {
                 <li key={item.path}>
                   <Link
                     to={item.path}
-                    className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors"
+                    className={cn(
+                      "flex items-center gap-2.5 px-3 py-1.5 text-sm rounded-md transition-colors",
+                      isActive(item.path)
+                        ? 'bg-gray-100 text-gray-900 font-medium'
+                        : 'text-gray-600 hover:bg-gray-50'
+                    )}
                   >
                     {Icon && <Icon className="w-4 h-4" />}
                     <span>{item.label}</span>
                   </Link>
-                  {item.nested && (
-                    <ul className="ml-9 mt-1 space-y-0.5">
-                      {item.nested.map((nested) => (
-                        <li key={nested.path}>
-                          <Link
-                            to={nested.path}
-                            className="block px-3 py-1 text-xs text-gray-500 hover:text-gray-900 transition-colors"
-                          >
-                            {nested.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </li>
               );
             })}

@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, StarOff, TrendingUp, TrendingDown } from 'lucide-react';
+import { Star, StarOff, TrendingUp, TrendingDown, LineChart } from 'lucide-react';
 
 interface Crop {
   id: number;
@@ -16,6 +17,7 @@ interface Crop {
 }
 
 const Crops = () => {
+  const navigate = useNavigate();
   const [crops, setCrops] = useState<Crop[]>([
     {
       id: 1,
@@ -107,19 +109,6 @@ const Crops = () => {
     ));
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'High':
-        return 'bg-green-100 text-green-700';
-      case 'Low':
-        return 'bg-red-100 text-red-700';
-      case 'Stable':
-        return 'bg-blue-100 text-blue-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
   const filteredCrops = filter === 'following' 
     ? crops.filter(crop => crop.isFollowing)
     : crops;
@@ -185,9 +174,6 @@ const Crops = () => {
                     Price Change
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Last Updated
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -230,32 +216,38 @@ const Crops = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge className={getStatusColor(crop.marketStatus)}>
-                        {crop.marketStatus}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm text-gray-500">{crop.lastUpdated}</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <Button
-                        variant={crop.isFollowing ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => toggleFollow(crop.id)}
-                        className="gap-2"
-                      >
-                        {crop.isFollowing ? (
-                          <>
-                            <Star className="w-4 h-4 fill-current" />
-                            Following
-                          </>
-                        ) : (
-                          <>
-                            <StarOff className="w-4 h-4" />
-                            Follow
-                          </>
-                        )}
-                      </Button>
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigate(`/crops/${crop.id}/trend`)}
+                          className="gap-2"
+                        >
+                          <LineChart className="w-4 h-4" />
+                          View Trend
+                        </Button>
+                        <Button
+                          variant={crop.isFollowing ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => toggleFollow(crop.id)}
+                          className="gap-2"
+                        >
+                          {crop.isFollowing ? (
+                            <>
+                              <Star className="w-4 h-4 fill-current" />
+                              Following
+                            </>
+                          ) : (
+                            <>
+                              <StarOff className="w-4 h-4" />
+                              Follow
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}

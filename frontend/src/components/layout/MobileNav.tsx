@@ -1,4 +1,4 @@
-import { Home, History, Bell, Settings, User, Sprout } from 'lucide-react';
+import { Home, User, Sprout, CloudRain, Sparkles } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -8,8 +8,8 @@ const MobileNav = () => {
   const navItems = [
     { icon: Home, path: '/', label: 'Home' },
     { icon: Sprout, path: '/crops', label: 'Crops' },
-    { icon: Bell, path: '/notifications', label: 'Alerts' },
-    { icon: Settings, path: '/settings', label: 'Settings' },
+    { icon: Sparkles, path: '/advice', label: 'Advice' },
+    { icon: CloudRain, path: '/weather', label: 'Weather' },
     { icon: User, path: '/profile', label: 'Profile' },
   ];
 
