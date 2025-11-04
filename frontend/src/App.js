@@ -1,5 +1,7 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+// Initialize Firebase (exports app, auth, db, storage)
+import "./firebase";
 
 function App() {
   return (

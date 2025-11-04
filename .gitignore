@@ -136,3 +136,17 @@ coverage/
 
 context.md
 instructions.md
+desktop.ini
+
+# ============================================
+# Vite specific
+# ============================================
+# Vite pre-bundling cache (usually inside node_modules)
+node_modules/.vite/
+frontend/node_modules/.vite/
+# Vite local cache (if configured)
+frontend/.vite/
+
+# ESLint cache
+.eslintcache
+frontend/.eslintcache
