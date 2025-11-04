@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { User, FileText, LayoutDashboard } from 'lucide-react';
+import { User, FileText, LayoutDashboard, Sprout } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MenuItem {
@@ -21,13 +21,13 @@ const Sidebar = () => {
   ];
 
   const pages: MenuItem[] = [
+    { label: 'Crops', path: '/crops', icon: Sprout },
     {
       label: 'User Profile',
       path: '/profile',
       icon: User,
       nested: [
         { label: 'Overview', path: '/profile' },
-        { label: 'Crops', path: '/crops' },
       ],
     },
     { label: 'Blog', path: '/blog', icon: FileText },
