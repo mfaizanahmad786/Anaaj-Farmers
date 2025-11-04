@@ -1,70 +1,5 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# ============================================
-# Frontend (React/Node.js)
-# ============================================
-frontend/node_modules/
-frontend/.pnp
-frontend/.pnp.js
-frontend/build/
-frontend/dist/
-frontend/.cache/
-frontend/coverage/
-
-# ============================================
-# Backend (Node.js)
-# ============================================
-backend/node_modules/
-backend/dist/
-backend/build/
-backend/.cache/
-
-# ============================================
-# Backend (Python)
-# ============================================
-backend/__pycache__/
-backend/*.py[cod]
-backend/*$py.class
-backend/*.so
-backend/.Python
-backend/env/
-backend/venv/
-backend/ENV/
-backend/env.bak/
-backend/venv.bak/
-backend/.venv/
-backend/pip-log.txt
-backend/pip-delete-this-directory.txt
-backend/.mypy_cache/
-backend/.dmypy.json
-backend/dmypy.json
-backend/.pytest_cache/
-backend/.coverage
-backend/htmlcov/
-backend/.tox/
-backend/.nox/
-backend/.hypothesis/
-backend/*.egg-info/
-backend/dist/
-backend/wheels/
-backend/*.egg
-backend/.eggs/
-
-# ============================================
-# Environment Variables
-# ============================================
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env*.local
-*.env
-
-# ============================================
 # Logs
-# ============================================
-logs/
+logs
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -72,81 +7,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# ============================================
-# OS Files
-# ============================================
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-*.swp
-*.swo
-*~
-
-# ============================================
-# IDE & Editor Files
-# ============================================
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-*.code-workspace
-*.iml
-*.ipr
-*.iws
-.project
-.classpath
-.settings/
-
-# ============================================
-# Testing
-# ============================================
-coverage/
-.nyc_output/
-.jest/
-
-# ============================================
-# Temporary Files
-# ============================================
-*.tmp
-*.temp
-*.bak
-*.backup
-*.old
-
-# ============================================
-# Database Files
-# ============================================
-*.sqlite
-*.sqlite3
-*.db
-*.sql
-
-# ============================================
-# Misc
-# ============================================
-*.pem
-*.key
-*.cert
-.cache/
-.temp/
-
-context.md
-instructions.md
-desktop.ini
-
-# ============================================
-# Vite specific
-# ============================================
-# Vite pre-bundling cache (usually inside node_modules)
-node_modules/.vite/
-frontend/node_modules/.vite/
-# Vite local cache (if configured)
-frontend/.vite/
-
-# ESLint cache
-.eslintcache
-frontend/.eslintcache
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
