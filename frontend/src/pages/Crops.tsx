@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, StarOff, TrendingUp, TrendingDown, LineChart } from 'lucide-react';
+import { getFollowedCrops, toggleFollowCrop, type FollowedCrop } from '@/lib/followedCrops';
 
 interface Crop {
   id: number;
@@ -103,10 +104,30 @@ const Crops = () => {
 
   const [filter, setFilter] = useState<'all' | 'following'>('all');
 
+  // Load followed status from localStorage on mount
+  useEffect(() => {
+    const followed = getFollowedCrops();
+    const followedIds = followed.map(c => c.id);
+    setCrops(crops => crops.map(crop => ({
+      ...crop,
+      isFollowing: followedIds.includes(crop.id)
+    })));
+  }, []);
+
   const toggleFollow = (id: number) => {
-    setCrops(crops.map(crop => 
-      crop.id === id ? { ...crop, isFollowing: !crop.isFollowing } : crop
-    ));
+    const crop = crops.find(c => c.id === id);
+    if (crop) {
+      const followedCrop: FollowedCrop = {
+        id: crop.id,
+        name: crop.name,
+        category: crop.category,
+        currentPrice: crop.currentPrice
+      };
+      const nowFollowing = toggleFollowCrop(followedCrop);
+      setCrops(crops.map(c => 
+        c.id === id ? { ...c, isFollowing: nowFollowing } : c
+      ));
+    }
   };
 
   const filteredCrops = filter === 'following' 

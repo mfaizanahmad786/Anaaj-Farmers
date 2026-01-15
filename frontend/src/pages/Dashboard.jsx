@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, ChevronDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowUpCircle, ArrowDownCircle, Activity, CloudSun } from 'lucide-react';
 import NotificationsPanel from '@/components/dashboard/NotificationsPanel';
+import { Link } from 'react-router-dom';
+import { getFollowedCrops } from '@/lib/followedCrops';
 import {
   LineChart,
   Line,
@@ -21,7 +23,30 @@ import {
 } from 'recharts';
 
 const Dashboard = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('Today');
+  const [selectedCrop, setSelectedCrop] = useState('Potato');
+  const [followedCrops, setFollowedCrops] = useState([]);
+  
+  // Load followed crops from localStorage
+  useEffect(() => {
+    const loadFollowedCrops = () => {
+      const followed = getFollowedCrops();
+      setFollowedCrops(followed);
+      // If user has followed crops, select the first one
+      if (followed.length > 0 && !cropDataMap[selectedCrop]) {
+        setSelectedCrop(followed[0].name);
+      }
+    };
+    
+    loadFollowedCrops();
+    
+    // Listen for changes in followed crops
+    const handleFollowChange = () => {
+      loadFollowedCrops();
+    };
+    
+    window.addEventListener('followedCropsChanged', handleFollowChange);
+    return () => window.removeEventListener('followedCropsChanged', handleFollowChange);
+  }, []);
 
   // Stats cards data
   const stats = [
@@ -31,6 +56,8 @@ const Dashboard = () => {
       change: '+11.01%',
       isPositive: true,
       bgColor: 'bg-purple-50',
+      icon: ArrowUpCircle,
+      iconColor: 'text-purple-600',
     },
     {
       title: 'Lowest Price Jump',
@@ -38,6 +65,8 @@ const Dashboard = () => {
       change: '-0.03%',
       isPositive: false,
       bgColor: 'bg-blue-50',
+      icon: ArrowDownCircle,
+      iconColor: 'text-blue-600',
     },
     {
       title: 'Market Volatility',
@@ -45,26 +74,69 @@ const Dashboard = () => {
       change: '+15.03%',
       isPositive: true,
       bgColor: 'bg-cyan-50',
+      icon: Activity,
+      iconColor: 'text-cyan-600',
     },
     {
       title: 'Weather',
-      value: '2,318',
-      change: '+6.08%',
+      value: '28°C',
+      change: 'Clear Sky',
       isPositive: true,
-      bgColor: 'bg-purple-50',
+      bgColor: 'bg-amber-50',
+      icon: CloudSun,
+      iconColor: 'text-amber-600',
     },
   ];
 
-  // Followed Crops chart data
-  const followedCropsData = [
-    { month: 'Jan', thisYear: 15000, lastYear: 18000 },
-    { month: 'Feb', thisYear: 18000, lastYear: 12000 },
-    { month: 'Mar', thisYear: 12000, lastYear: 14000 },
-    { month: 'Apr', thisYear: 25000, lastYear: 8000 },
-    { month: 'May', thisYear: 22000, lastYear: 12000 },
-    { month: 'Jun', thisYear: 30000, lastYear: 20000 },
-    { month: 'Jul', thisYear: 28000, lastYear: 25000 },
-  ];
+  // Create separate data for each crop
+  const cropDataMap = {
+    Tomato: [
+      { month: 'Jan', thisYear: 18000, lastYear: 16000 },
+      { month: 'Feb', thisYear: 22000, lastYear: 18000 },
+      { month: 'Mar', thisYear: 19000, lastYear: 20000 },
+      { month: 'Apr', thisYear: 28000, lastYear: 15000 },
+      { month: 'May', thisYear: 25000, lastYear: 19000 },
+      { month: 'Jun', thisYear: 32000, lastYear: 23000 },
+      { month: 'Jul', thisYear: 30000, lastYear: 28000 },
+    ],
+    Potato: [
+      { month: 'Jan', thisYear: 15000, lastYear: 18000 },
+      { month: 'Feb', thisYear: 18000, lastYear: 12000 },
+      { month: 'Mar', thisYear: 12000, lastYear: 14000 },
+      { month: 'Apr', thisYear: 25000, lastYear: 8000 },
+      { month: 'May', thisYear: 22000, lastYear: 12000 },
+      { month: 'Jun', thisYear: 30000, lastYear: 20000 },
+      { month: 'Jul', thisYear: 28000, lastYear: 25000 },
+    ],
+    Wheat: [
+      { month: 'Jan', thisYear: 12000, lastYear: 13000 },
+      { month: 'Feb', thisYear: 14000, lastYear: 11000 },
+      { month: 'Mar', thisYear: 16000, lastYear: 15000 },
+      { month: 'Apr', thisYear: 18000, lastYear: 12000 },
+      { month: 'May', thisYear: 20000, lastYear: 17000 },
+      { month: 'Jun', thisYear: 22000, lastYear: 19000 },
+      { month: 'Jul', thisYear: 21000, lastYear: 20000 },
+    ],
+    Rice: [
+      { month: 'Jan', thisYear: 20000, lastYear: 19000 },
+      { month: 'Feb', thisYear: 21000, lastYear: 20000 },
+      { month: 'Mar', thisYear: 23000, lastYear: 21000 },
+      { month: 'Apr', thisYear: 24000, lastYear: 22000 },
+      { month: 'May', thisYear: 26000, lastYear: 24000 },
+      { month: 'Jun', thisYear: 28000, lastYear: 26000 },
+      { month: 'Jul', thisYear: 27000, lastYear: 27000 },
+    ],
+  };
+
+  // Get data for selected crop
+  const followedCropsData = cropDataMap[selectedCrop] || cropDataMap.Potato;
+  
+  // Determine which crops to show in the selector
+  const cropsToShow = followedCrops.length > 0 
+    ? followedCrops.map(c => c.name).filter(name => cropDataMap[name])
+    : Object.keys(cropDataMap);
+    
+  const isShowingFollowed = followedCrops.length > 0;
 
   // Crop Prices bar chart data
   const cropPricesData = [
@@ -100,40 +172,41 @@ const Dashboard = () => {
     <div className="flex">
       {/* Main Content */}
       <div className="flex-1 mr-80">
-        {/* Header with period selector */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold">Overview</h1>
-          <Button variant="outline" size="sm" className="gap-2">
-            {selectedPeriod}
-            <ChevronDown className="w-4 h-4" />
-          </Button>
         </div>
 
         {/* Stats Cards Grid */}
         <div className="grid grid-cols-4 gap-4 mb-6">
-          {stats.map((stat, idx) => (
-            <Card key={idx} className={stat.bgColor}>
-              <CardHeader className="pb-2">
-                <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <h3 className="text-3xl font-bold">{stat.value}</h3>
-                    <div className="flex items-center gap-1 mt-1">
-                      {stat.isPositive ? (
-                        <TrendingUp className="w-3 h-3 text-gray-600" />
-                      ) : (
-                        <TrendingDown className="w-3 h-3 text-gray-600" />
-                      )}
-                      <span className="text-xs text-gray-600">{stat.change}</span>
+          {stats.map((stat, idx) => {
+            const Icon = stat.icon;
+            return (
+              <Card key={idx} className={stat.bgColor}>
+                <CardHeader className="pb-2">
+                  <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <h3 className="text-3xl font-bold">{stat.value}</h3>
+                      <div className="flex items-center gap-1 mt-1">
+                        {stat.isPositive ? (
+                          <TrendingUp className="w-3 h-3 text-gray-600" />
+                        ) : (
+                          <TrendingDown className="w-3 h-3 text-gray-600" />
+                        )}
+                        <span className="text-xs text-gray-600">{stat.change}</span>
+                      </div>
+                    </div>
+                    <div className={`w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center ${stat.iconColor}`}>
+                      <Icon className="w-5 h-5" />
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-lg bg-white/50"></div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Charts Row */}
@@ -142,14 +215,34 @@ const Dashboard = () => {
           <Card className="col-span-2">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-semibold">Followed Crops</CardTitle>
-                <div className="flex gap-4 text-xs">
-                  <button className="flex items-center gap-1">
-                    <span className="text-gray-500">Tomato</span>
-                  </button>
-                  <button className="flex items-center gap-1 border-b-2 border-black pb-1">
-                    <span className="font-medium">Potato</span>
-                  </button>
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-base font-semibold">
+                    {isShowingFollowed ? 'Followed Crops' : 'Market Crops'}
+                  </CardTitle>
+                  {!isShowingFollowed && (
+                    <span className="text-xs text-gray-500">
+                      (<Link to="/crops" className="underline hover:text-gray-700">Follow crops</Link> to customize)
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-4 text-xs overflow-x-auto max-w-md">
+                  {cropsToShow.length > 0 ? (
+                    cropsToShow.map((cropName) => (
+                      <button
+                        key={cropName}
+                        onClick={() => setSelectedCrop(cropName)}
+                        className={`flex items-center gap-1 pb-1 transition-all whitespace-nowrap ${
+                          selectedCrop === cropName
+                            ? 'border-b-2 border-black font-medium'
+                            : 'text-gray-500 hover:text-gray-900'
+                        }`}
+                      >
+                        <span>{cropName}</span>
+                      </button>
+                    ))
+                  ) : (
+                    <span className="text-gray-500">No crops available</span>
+                  )}
                 </div>
               </div>
               <div className="flex gap-4 mt-2 text-xs text-gray-500">
