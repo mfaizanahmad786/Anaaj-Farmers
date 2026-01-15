@@ -25,12 +25,12 @@ const Sidebar = () => {
   return (
     <div className="h-screen w-52 bg-white border-r border-gray-100 flex flex-col fixed left-0 top-0">
       {/* Logo */}
-      <div className="px-6 py-5">
+      <div className="px-6 py-5 mt-[32px]">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded bg-black flex items-center justify-center">
-            <span className="text-white text-sm font-semibold">B</span>
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+            <span className="text-white text-lg font-bold">A</span>
           </div>
-          <span className="text-sm font-medium">ByeWind</span>
+          <span className="text-lg font-semibold text-gray-900">Anaaj</span>
         </div>
       </div>
 
